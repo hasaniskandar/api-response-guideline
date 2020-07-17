@@ -1,0 +1,574 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API Response Examples",
+    "description": "This is a sample implementation of [API Response Guideline](https://github.com/hasaniskandar/api-response-guideline)",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/v1/posts": {
+      "get": {
+        "summary": "List posts",
+        "description": "Returns a list of posts",
+        "operationId": "getPosts",
+        "responses": {
+          "200": {
+            "description": "Posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "posts": {
+                              "type": "array",
+                              "description": "List of posts",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "$ref": "#/components/schemas/Post/properties/id"
+                                  },
+                                  "title": {
+                                    "$ref": "#/components/schemas/Post/properties/title"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "title"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "posts"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "post"
+        ]
+      },
+      "post": {
+        "summary": "Create post",
+        "operationId": "createPost",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "description": "Post title",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/title"
+            }
+          },
+          {
+            "name": "content",
+            "in": "query",
+            "description": "Post content",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/content"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The post",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "post": {
+                              "$ref": "#/components/schemas/Post"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FailureResponse"
+                },
+                "examples": {
+                  "post-invalid": {
+                    "$ref": "#/components/examples/post-invalid"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "post"
+        ]
+      }
+    },
+    "/v1/posts/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Post ID",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/Post/properties/id"
+          }
+        }
+      ],
+      "delete": {
+        "summary": "Delete post",
+        "operationId": "deletePost",
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FailureResponse"
+                },
+                "examples": {
+                  "post-not-found": {
+                    "$ref": "#/components/examples/post-not-found"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "post"
+        ]
+      },
+      "get": {
+        "summary": "Find post",
+        "description": "Returns a post by ID. Also returns related posts when specified.",
+        "operationId": "getPost",
+        "parameters": [
+          {
+            "name": "related_posts",
+            "in": "query",
+            "description": "Determines whether to include related posts or not",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The post",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "post": {
+                              "$ref": "#/components/schemas/Post"
+                            },
+                            "related_posts": {
+                              "type": "array",
+                              "description": "List of related posts",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "$ref": "#/components/schemas/Post/properties/id"
+                                  },
+                                  "title": {
+                                    "$ref": "#/components/schemas/Post/properties/title"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "title"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "post"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "with-related-posts": {
+                    "summary": "With related posts",
+                    "value": {
+                      "status": "success",
+                      "data": {
+                        "post": {
+                          "id": "19e71503-9237-41d9-94b5-88f4a4c41691",
+                          "title": "A post",
+                          "content": "Post content"
+                        },
+                        "related_posts": [
+                          {
+                            "id": "2cfdb913-6f56-40fa-b949-e9901cb876a2",
+                            "title": "Another post"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "without-related-posts": {
+                    "summary": "Without related posts",
+                    "value": {
+                      "status": "success",
+                      "data": {
+                        "post": {
+                          "id": "19e71503-9237-41d9-94b5-88f4a4c41691",
+                          "title": "A post",
+                          "content": "Post content"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FailureResponse"
+                },
+                "examples": {
+                  "post-not-found": {
+                    "$ref": "#/components/examples/post-not-found"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "post"
+        ]
+      },
+      "put": {
+        "summary": "Update post",
+        "operationId": "updatePost",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "description": "Post title",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/title"
+            }
+          },
+          {
+            "name": "content",
+            "in": "query",
+            "description": "Post content",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/content"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The post",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "post": {
+                              "$ref": "#/components/schemas/Post"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Client error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FailureResponse"
+                },
+                "examples": {
+                  "post-invalid": {
+                    "$ref": "#/components/examples/post-invalid"
+                  },
+                  "post-not-found": {
+                    "$ref": "#/components/examples/post-not-found"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "post"
+        ]
+      }
+    }
+  },
+  "components": {
+    "examples": {
+      "post-invalid": {
+        "summary": "Post invalid",
+        "value": {
+          "status": "failure",
+          "data": {
+            "message": "Validation failed",
+            "messages": {
+              "title": "can't be blank"
+            }
+          }
+        }
+      },
+      "post-not-found": {
+        "summary": "Post not found",
+        "value": {
+          "status": "failure",
+          "data": {
+            "message": "Post could not be found"
+          }
+        }
+      }
+    },
+    "responses": {
+      "ServerError": {
+        "description": "Server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "description": "Response for when an API call fails due to an error on the server",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "error"
+            ],
+            "example": "error"
+          },
+          "message": {
+            "type": "string",
+            "description": "A meaningful, end-user-readable (or at the least log-worthy) message, explaining what went wrong.",
+            "example": "Internal server error"
+          },
+          "code": {
+            "type": "integer",
+            "description": "A numeric code corresponding to the error, if applicable.",
+            "example": 1234
+          },
+          "data": {
+            "type": "object",
+            "description": "A generic container for any other information about the error, i.e. the conditions that caused the error, stack traces, etc."
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ],
+        "example": {
+          "status": "error",
+          "message": "Internal server error"
+        }
+      },
+      "FailureResponse": {
+        "type": "object",
+        "description": "Response for when an API call is rejected due to invalid data or call conditions, the data key contains an object explaining what went wrong, typically a hash of validation errors.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "failure"
+            ],
+            "example": "failure"
+          },
+          "data": {
+            "type": "object",
+            "description": "Failure details",
+            "example": {
+              "message": "Bad request"
+            }
+          }
+        },
+        "required": [
+          "status",
+          "data"
+        ]
+      },
+      "Post": {
+        "type": "object",
+        "description": "Post",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Post ID",
+            "example": "19e71503-9237-41d9-94b5-88f4a4c41691"
+          },
+          "title": {
+            "type": "string",
+            "description": "Post title",
+            "example": "A post"
+          },
+          "content": {
+            "type": "string",
+            "description": "Post content",
+            "example": "Post content"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "content"
+        ]
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "description": "Response for when an API call is successful, the data key is used as a simple envelope for the results.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ],
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "description": "Result object"
+          }
+        },
+        "required": [
+          "status",
+          "data"
+        ]
+      }
+    }
+  }
+}
