@@ -1,13 +1,13 @@
-# API Response Guideline Proposal
+# API Response Guideline
 
-Adapting https://github.com/omniti-labs/jsend.
+Adapting https://github.com/omniti-labs/jsend (with slight adjustments).
 
 ### Success Response
 
-| Key    | Required | Type   |                                        |
-| ------ | -------- | ------ | -------------------------------------- |
-| status | required | string | Always set to `"success"`              |
-| data   | required | object | A free-form object `{ ... }` or `null` |
+| Key | Presence | Type | Value |
+| - | - | - | - |
+| status | required | string | `"success"` |
+| data | required | object | A free-form object `{}` |
 
 Examples:
 
@@ -109,31 +109,12 @@ Examples:
 
 - No data
 
-    **Please vote** :pray: :grin:
-
-    Another ambiguity is the use of `200 OK` and `204 No Content` for `DELETE`
-    request to the resource. Would be great if we can choose one and agree to
-    stick with it. Choices I can think of are:
-
-    - Use `200 OK` with `data` is set to `null`
-
-        ```json
-        {
-          "status": "success",
-          "data": null
-        }
-        ```
-
-    - Use `200 OK` with `data` is set to empty object `{}`
-
-        ```json
-        {
-          "status": "success",
-          "data": {}
-        }
-        ```
-
-    - Use `204 No Content`
+    ```json
+    {
+      "status": "success",
+      "data": {}
+    }
+    ```
 
 ### Failure Response
 
@@ -141,10 +122,10 @@ Treats client errors as failures (i.e. parameter missing, invalid auth token,
 resource not found, validation errors, etc.). Ideally returned with 4xx HTTP
 status code.
 
-| Key    | Required | Type   |                              |
-| ------ | -------- | ------ | ---------------------------- |
-| status | required | string | Always set to `"failure"`    |
-| data   | required | object | A free-form object `{ ... }` |
+| Key | Presence | Type | Value |
+| - | - | - | - |
+| status | required | string | `"failure"` |
+| data | required | object | A free-form object `{}` |
 
 Examples:
 
@@ -185,12 +166,12 @@ Examples:
 Treats server errors/malfunctions as errors (i.e. redis connection issue, syntax
 error, etc.). Ideally returned with 5xx HTTP status code.
 
-| Key     | Required | Type    |                                        |
-| ------- | -------- | ------- | -------------------------------------- |
-| status  | required | string  | Always set to `"error"`                |
-| message | required | string  | Reason, e.g. `"Internal server error"` |
-| code    | optional | integer | App error code, e.g. `1001`            |
-| data    | optional | object  | A free-form object `{ ... }`           |
+| Key | Presence | Type | Value |
+| - | - | - | - |
+| status | required | string | `"error"` |
+| message | required | string | Reason (i.e. `"Internal server error"`) |
+| code | optional | integer | App error code (i.e. `1001`) |
+| data | optional | object | A free-form object `{}` |
 
 Examples:
 
